@@ -20,10 +20,21 @@ gdd = st.slider("Growing Degree Days (GDD)", 1.0, 20.0, 5.0)
 
 # Predict button
 if st.button("Predict Crop Yield"):
-    # Create DataFrame safely matching model feature names
-    input_data = pd.DataFrame([[temp, humidity, rainfall, soil_moisture, nitrogen, phosphorus, potassium, gdd]], 
-                              columns=model.feature_names_in_)
+    # Using a dictionary to map values directly to model feature names safely
+    input_data = pd.DataFrame({
+        'Temp': [temp],
+        'Humidity': [humidity],
+        'Rainfall': [rainfall],
+        'Soil_Moisture': [soil_moisture],
+        'Nitrogen': [nitrogen],
+        'Phosphorus': [phosphorus],
+        'Potassium': [potassium],
+        'GDD': [gdd]
+    })
     
+    # Reindex to match the exact columns the model was trained on
+    input_data = input_data.reindex(columns=model.feature_names_in_, fill_value=0)
+
     prediction = model.predict(input_data)
 
     st.success(f"Predicted Crop Yield: {prediction[0]:.2f} Tons/Hectare")
