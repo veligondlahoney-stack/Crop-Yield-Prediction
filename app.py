@@ -1,6 +1,5 @@
 import streamlit as st
 import joblib
-import numpy as np
 import pandas as pd
 
 # Load the saved XGBoost model
@@ -21,10 +20,9 @@ gdd = st.slider("Growing Degree Days (GDD)", 1.0, 20.0, 5.0)
 
 # Predict button
 if st.button("Predict Crop Yield"):
-    input_data = pd.DataFrame(
-        [[temp, humidity, rainfall, soil_moisture, nitrogen, phosphorus, potassium, gdd]],
-        columns=model.feature_names_in_
-    )
+    # Create DataFrame safely matching model feature names
+    input_data = pd.DataFrame([[temp, humidity, rainfall, soil_moisture, nitrogen, phosphorus, potassium, gdd]], 
+                              columns=model.feature_names_in_)
     
     prediction = model.predict(input_data)
 
